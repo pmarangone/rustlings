@@ -8,6 +8,8 @@
 
 // Execute `rustlings hint errors6` or use the `hint` watch subcommand for a hint.
 
+// I AM NOT DONE
+
 use std::num::ParseIntError;
 
 // This is a custom error type that we will be using in `parse_pos_nonzero()`.
@@ -18,36 +20,38 @@ enum ParsePosNonzeroError {
 }
 
 impl ParsePosNonzeroError {
-    fn from_creation(err: CreationError) -> ParsePosNonzeroError {
+    pub fn from_creation(self, err: CreationError) -> ParsePosNonzeroError {
         ParsePosNonzeroError::Creation(err)
     }
     // TODO: add another error conversion function here.
-    fn from_parseint(err: ParseIntError) -> ParsePosNonzeroError {
+    pub fn from_parseint(self, err: ParseIntError) -> ParsePosNonzeroError {
         ParsePosNonzeroError::ParseInt(err)
     }
-    // fn from(err: std::error::Error) -> ParsePosNonzeroError {
-    //     match err {
-
-    //     }
+    // fn from(self, err: ParsePosNonzeroError) {
+    //     return match err {
+    //         CreationError => self.from_creation(err),
+    //         ParseIntError => self.from_parseint(err),
+    //     };
     // }
 }
 
 fn parse_pos_nonzero(s: &str) -> Result<PositiveNonzeroInteger, ParsePosNonzeroError> {
     // TODO: change this to return an appropriate error instead of panicking
     // when `parse()` returns an error.
-    // my solution
-    // let x: i64 = s.parse().map_err(ParsePosNonzeroError::from_parseint);
-
-    // correct solution
-    let x: i64 = s.parse().map_err(ParsePosNonzeroError::from_parseint)?;
-    PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
-
-    // alternative solution
-    // println!("{x}");
-    // match x {
-    //     Ok(x) => PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation),
-    //     Err(err) => Err(ParsePosNonzeroError::ParseInt(err)),
+    let x: i64 = s.parse()?;
+    return match PositiveNonzeroInteger::new(x) {
+        Err(err) => return Err(ParsePosNonzeroError::ParseInt(err)),
+        Ok(n) => Ok(n),
+    };
+    // match PositiveNonzeroInteger::new(x) {
+    // Err(err) => match err {
+    //     CreationError::Negative => Err(ParsePosNonzeroError::Creation(err)),
+    //     CreationError::Zero => Err(ParsePosNonzeroError::Creation(err)),
+    // },
+    // Err(err) => Err(ParsePosNonzeroError::ParseInt(err)),
+    // Ok(res) => Ok(res),
     // }
+    // PositiveNonzeroInteger::new(x).map_err(ParsePosNonzeroError::from_creation)
 }
 
 // Don't change anything below this line.
