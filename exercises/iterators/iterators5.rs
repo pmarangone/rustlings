@@ -10,11 +10,9 @@
 //
 // Make the code compile and the tests pass.
 
-// I AM NOT DONE
-
 use std::collections::HashMap;
 
-#[derive(Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum Progress {
     None,
     Some,
@@ -34,7 +32,13 @@ fn count_for(map: &HashMap<String, Progress>, value: Progress) -> usize {
 fn count_iterator(map: &HashMap<String, Progress>, value: Progress) -> usize {
     // map is a hashmap with String keys and Progress values.
     // map = { "variables1": Complete, "from_str": None, ... }
-    todo!();
+    let val = map
+        .iter()
+        .filter(|x| x.1 == &value)
+        .collect::<Vec<(&String, &Progress)>>();
+
+    // println!("{:#?}", val);
+    val.len()
 }
 
 fn count_collection_for(collection: &[HashMap<String, Progress>], value: Progress) -> usize {
@@ -53,7 +57,14 @@ fn count_collection_iterator(collection: &[HashMap<String, Progress>], value: Pr
     // collection is a slice of hashmaps.
     // collection = [{ "variables1": Complete, "from_str": None, ... },
     //     { "variables2": Complete, ... }, ... ]
-    todo!();
+    let val = collection.iter().fold(0, |acc, x| {
+        acc + x
+            .iter()
+            .filter(|x| x.1 == &value)
+            .collect::<Vec<(&String, &Progress)>>()
+            .len()
+    });
+    val
 }
 
 #[cfg(test)]
