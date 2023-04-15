@@ -8,16 +8,16 @@
 // This exercise is meant to show you what to expect when passing data to Cow.
 // Fix the unit tests by checking for Cow::Owned(_) and Cow::Borrowed(_) at the TODO markers.
 
-// I AM NOT DONE
-
 use std::borrow::Cow;
 
 fn abs_all<'a, 'b>(input: &'a mut Cow<'b, [i32]>) -> &'a mut Cow<'b, [i32]> {
     for i in 0..input.len() {
         let v = input[i];
+        println!("v is {}", v);
         if v < 0 {
             // Clones into a vector if not already owned.
             input.to_mut()[i] = -v;
+            println!("not sure wtf is this: {}", input.to_mut()[i]);
         }
     }
     input
@@ -44,7 +44,8 @@ mod tests {
         let slice = [0, 1, 2];
         let mut input = Cow::from(&slice[..]);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Borrowed(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -56,7 +57,8 @@ mod tests {
         let slice = vec![0, 1, 2];
         let mut input = Cow::from(slice);
         match abs_all(&mut input) {
-            // TODO
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
         }
     }
 
@@ -67,8 +69,9 @@ mod tests {
         // the same data as before.
         let slice = vec![-1, 0, 1];
         let mut input = Cow::from(slice);
-        match abs_all(&mut input) {
-            // TODO
-        }
+        return match abs_all(&mut input) {
+            Cow::Owned(_) => Ok(()),
+            _ => Err("Expected owned value"),
+        };
     }
 }
