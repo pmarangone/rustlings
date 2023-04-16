@@ -28,8 +28,6 @@ enum ParsePersonError {
     ParseInt(ParseIntError),
 }
 
-// I AM NOT DONE
-
 // Steps:
 // 1. If the length of the provided string is 0, an error should be returned
 // 2. Split the given string on the commas present in it
@@ -46,6 +44,53 @@ enum ParsePersonError {
 impl FromStr for Person {
     type Err = ParsePersonError;
     fn from_str(s: &str) -> Result<Person, Self::Err> {
+        println!("s is: {}", s);
+        if s.len() == 0 {
+            return Err(ParsePersonError::Empty);
+        }
+
+        let res: Vec<_> = s.split(",").collect();
+        println!("string len: {}", s.len());
+        println!("{:#?} and len: {}", res, res.len());
+
+        if res.len() == 1 || res.len() > 2 {
+            return Err(ParsePersonError::BadLen);
+        }
+
+        if res.len() == 2 {
+            let age_result = res[1].parse::<usize>();
+
+            if age_result.is_ok() && res[0].is_empty() {
+                return Err(ParsePersonError::NoName);
+            }
+
+            if res[0].is_empty() && res[1].is_empty() {
+                return Err(ParsePersonError::NoName);
+            }
+
+            if !res[0].is_empty() && age_result.is_err() {
+                return Err(ParsePersonError::ParseInt(age_result.err().unwrap()));
+            }
+
+            if res[0].is_empty() && age_result.is_err() {
+                return Err(ParsePersonError::NoName);
+            }
+        }
+
+        if res.len() == 2 {
+            let age_result = res[1].parse::<usize>();
+
+            if age_result.is_ok() {
+                return Ok(Person {
+                    name: res[0].to_string(),
+                    age: age_result.unwrap(),
+                });
+            }
+        }
+        return Ok(Person {
+            name: "name".to_string(),
+            age: 22,
+        });
     }
 }
 
